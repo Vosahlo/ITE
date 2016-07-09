@@ -1,0 +1,19 @@
+{
+    "_id": {
+        "$oid": "54b24099d92df13b481ebd7c"
+    },
+    "asctime": "2015-01-11 10:21:29,438",
+    "fileName": "./pixla.py",
+    "level": "DEBUG",
+    "lineNumber": 222,
+    "loggerName": "pixla",
+    "message": "index: Leasing px01 (excl: True)",
+    "method": "__enter__",
+    "module": "pixla",
+    "thread": 140308641994496,
+    "threadName": "MainThread",
+    "timestamp": {
+        "i": 438,
+        "t": 1420968089
+    }
+}
