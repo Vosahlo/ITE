@@ -19,3 +19,5 @@ datum2=datetime.strptime(json.loads(soubor.read('0/00/000/00002.json'))[u'asctim
 
 print datum2>datum
 
+
+
