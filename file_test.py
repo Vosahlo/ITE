@@ -60,8 +60,6 @@ for x in loglist :
     else:
         datehistogram[datum] = 1
 
-def makepichistogram(start,end,width,height):
-
 
 
 
