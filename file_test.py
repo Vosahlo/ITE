@@ -90,17 +90,17 @@ def make_nice_histogram_layout(imghistogramreturn, iteration):
     x_shift = 100
     corner = 25
 
-    img = Image.new('RGB', (old_image.width + x_shift + corner * 2, old_image.height + corner * 2), "white")
+    img = Image.new('RGB', (old_image.size[0] + x_shift + corner * 2, old_image.size[1] + corner * 2), "white")
     draw = ImageDraw.Draw(img)
     img.paste(old_image, (x_shift + corner, corner))
 
 
-    draw.text((x_shift + corner, old_image.height + corner+3), unicode(min_date), fill="red")
-    draw.text((img.width-corner-draw.textsize(unicode(max_date))[0], old_image.height + corner+3), unicode(max_date), fill="red")
+    draw.text((x_shift + corner, old_image.size[1] + corner+3), unicode(min_date), fill="red")
+    draw.text((img.size[0]-corner-draw.textsize(unicode(max_date))[0], old_image.size[1] + corner+3), unicode(max_date), fill="red")
 
     carka = 0
     while (carka<max_count):
-        ly = old_image.height + corner - ((carka * old_image.height)/max_count)
+        ly = old_image.size[1] + corner - ((carka * old_image.size[1])/max_count)
         draw.line((x_shift,ly,x_shift+corner,ly),fill="orange")
         draw.text((x_shift-draw.textsize(unicode(carka))[0],ly),unicode(carka),fill="orange")
         carka += iteration
