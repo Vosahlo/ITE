@@ -3,7 +3,7 @@ import zipfile
 from datetime import datetime
 from datetime import timedelta
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 soubor = zipfile.ZipFile('logs.dump.zip', 'r')
 seznamSouboru = soubor.namelist()
@@ -59,14 +59,12 @@ def imghistogram(width, height, start=datetime.min, end=datetime.max):
     mindate = datetime.max
     maxdate = datetime.min
     for x in datehistogram:
-        if (x > start) and (x < end):
+        if (x >= start) and (x <= end):
             maxcount = max(datehistogram[x], maxcount)
-        if (mindate>x):
-            mindate=x
-        if (maxdate<x):
-            maxdate=x
-
-
+            if (mindate > x):
+                mindate = x
+            if (maxdate < x):
+                maxdate = x
 
     img = Image.new('RGB', (width, height), "white")
     draw = ImageDraw.Draw(img)
@@ -74,14 +72,42 @@ def imghistogram(width, height, start=datetime.min, end=datetime.max):
     delta = maxdate - mindate
     deltahours = delta.total_seconds() / 3600
 
-
     for x in datehistogram:
-        if (x > mindate) and (x < maxdate):
-            lx = (((x - mindate).total_seconds()/3600) * width) / deltahours
+        if (x >= mindate) and (x <= maxdate):
+            lx = (((x - mindate).total_seconds() / 3600) * width) / deltahours
             ly = (datehistogram[x] * height) / maxcount
-            draw.line((lx,height,lx,height-ly),fill=1)
+            draw.line((lx, height, lx, height - ly), fill="black")
+
+    return [img, mindate, maxdate, maxcount]
+
+
+def make_nice_histogram_layout(imghistogramreturn, iteration):
+    old_image = imghistogramreturn[0]
+    min_date = imghistogramreturn[1]
+    max_date = imghistogramreturn[2]
+    max_count = imghistogramreturn[3]
+
+    x_shift = 100
+    corner = 25
+
+    img = Image.new('RGB', (old_image.width + x_shift + corner * 2, old_image.height + corner * 2), "white")
+    draw = ImageDraw.Draw(img)
+    img.paste(old_image, (x_shift + corner, corner))
+
+
+    draw.text((x_shift + corner, old_image.height + corner+3), unicode(min_date), fill="red")
+    draw.text((img.width-corner-draw.textsize(unicode(max_date))[0], old_image.height + corner+3), unicode(max_date), fill="red")
+
+    carka = 0
+    while (carka<max_count):
+        ly = old_image.height + corner - ((carka * old_image.height)/max_count)
+        draw.line((x_shift,ly,x_shift+corner,ly),fill="orange")
+        draw.text((x_shift-draw.textsize(unicode(carka))[0],ly),unicode(carka),fill="orange")
+        carka += iteration
+
 
     return img
 
-hist = imghistogram(1000,300)
-hist.show()
+
+image = make_nice_histogram_layout(imghistogram(1000, 500), 200)
+image.show()
