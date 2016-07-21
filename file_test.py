@@ -111,3 +111,4 @@ def make_nice_histogram_layout(imghistogramreturn, iteration):
 
 image = make_nice_histogram_layout(imghistogram(1000, 500), 200)
 image.show()
+image.save("histogram.jpg",format=None)
