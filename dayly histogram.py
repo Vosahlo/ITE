@@ -4,21 +4,22 @@ from datetime import datetime
 from datetime import timedelta
 from PIL import Image, ImageDraw, ImageFont
 
-#nacteni souboru
+# nacteni souboru
 soubor = zipfile.ZipFile('logs.dump.zip', 'r')
 seznamSouboru = soubor.namelist()
 JsonSoubor = soubor.open('0/00/000/00001.json', 'r')
-#formatovani data a casu
+# formatovani data a casu
 datum = datetime.strptime(json.loads(soubor.read('0/00/000/00001.json'))[u'asctime'], '%Y-%m-%d %H:%M:%S,%f')
-#print datum
+# print datum
 
 nasJson = json.loads(soubor.read('0/00/000/00001.json'))
 date_object = datetime.strptime(nasJson[u'asctime'], '%Y-%m-%d %H:%M:%S,%f')
 
-#datum = datetime.strptime(json.loads(soubor.read('0/00/000/00001.json'))[u'asctime'], '%Y-%m-%d %H:%M:%S,%f')
-#datum2 = datetime.strptime(json.loads(soubor.read('0/00/000/00002.json'))[u'asctime'], '%Y-%m-%d %H:%M:%S,%f')
 
-#class pro objekty do listu
+# datum = datetime.strptime(json.loads(soubor.read('0/00/000/00001.json'))[u'asctime'], '%Y-%m-%d %H:%M:%S,%f')
+# datum2 = datetime.strptime(json.loads(soubor.read('0/00/000/00002.json'))[u'asctime'], '%Y-%m-%d %H:%M:%S,%f')
+
+# class pro objekty do listu
 class LogFile:
     def __init__(self, name, date, method, message):
         self.name = name
@@ -26,9 +27,10 @@ class LogFile:
         self.method = method
         self.message = message
 
+
 loglist = []
 
-#pridani dat do seznamu
+# pridani dat do seznamu
 zipfilelist = soubor.namelist()
 for x in zipfilelist:
     myJson = json.loads(soubor.read(x))
@@ -39,17 +41,17 @@ for x in zipfilelist:
 
 del zipfilelist
 
-#print loglist[3].name
-#print loglist[3].date
-#print loglist[3].method
-#print loglist[3].message
+# print loglist[3].name
+# print loglist[3].date
+# print loglist[3].method
+# print loglist[3].message
 
 datehistogram = {}
-#spocitani jednotlivych datumu
+# spocitani jednotlivych datumu
 for x in loglist:
     datum = x.date
-    #zjednoduseni casu pro porovnani
-    datum = datum.replace(second=0, microsecond=0, minute=0)
+    # zjednoduseni casu pro porovnani
+    datum = datum.replace(second=0, microsecond=0, minute=0, hour=0)
     if datehistogram.has_key(datum):
         datehistogram[datum] += 1
     else:
@@ -68,12 +70,12 @@ def imghistogram(width, height, start=datetime.min, end=datetime.max):
             if (maxdate < x):
                 maxdate = x
 
-#vytvoreni obrazku
+                # vytvoreni obrazku
     img = Image.new('RGB', (width, height), "white")
     draw = ImageDraw.Draw(img)
     delta = maxdate - mindate
     deltahours = delta.total_seconds() / 3600
-#vykresleni usecek v obrazku
+    # vykresleni usecek v obrazku
     for x in datehistogram:
         if (x >= mindate) and (x <= maxdate):
             lx = (((x - mindate).total_seconds() / 3600) * width) / deltahours
@@ -82,7 +84,8 @@ def imghistogram(width, height, start=datetime.min, end=datetime.max):
 
     return [img, mindate, maxdate, maxcount]
 
-#ramecek obrazku s popisky
+
+# ramecek obrazku s popisky
 def make_nice_histogram_layout(imghistogramreturn, iteration):
     old_image = imghistogramreturn[0]
     min_date = imghistogramreturn[1]
@@ -105,6 +108,6 @@ def make_nice_histogram_layout(imghistogramreturn, iteration):
     return img
 
 
-image = make_nice_histogram_layout(imghistogram(1000, 500), 200)
+image = make_nice_histogram_layout(imghistogram(1000, 500), 1000)
 # image.show()
-# image.save("histogram.jpg",format=None)
+image.save("histogram.jpg", format=None)
