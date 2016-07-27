@@ -6,17 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 #nacteni souboru
 soubor = zipfile.ZipFile('logs.dump.zip', 'r')
-seznamSouboru = soubor.namelist()
-JsonSoubor = soubor.open('0/00/000/00001.json', 'r')
-#formatovani data a casu
-datum = datetime.strptime(json.loads(soubor.read('0/00/000/00001.json'))[u'asctime'], '%Y-%m-%d %H:%M:%S,%f')
-#print datum
 
-nasJson = json.loads(soubor.read('0/00/000/00001.json'))
-date_object = datetime.strptime(nasJson[u'asctime'], '%Y-%m-%d %H:%M:%S,%f')
-
-#datum = datetime.strptime(json.loads(soubor.read('0/00/000/00001.json'))[u'asctime'], '%Y-%m-%d %H:%M:%S,%f')
-#datum2 = datetime.strptime(json.loads(soubor.read('0/00/000/00002.json'))[u'asctime'], '%Y-%m-%d %H:%M:%S,%f')
 
 #class pro objekty do listu
 class LogFile:
@@ -38,11 +28,6 @@ for x in zipfilelist:
     loglist.append(LogFile(x, datum, method, message))
 
 del zipfilelist
-
-#print loglist[3].name
-#print loglist[3].date
-#print loglist[3].method
-#print loglist[3].message
 
 datehistogram = {}
 #spocitani jednotlivych datumu
@@ -76,9 +61,11 @@ def imghistogram(width, height, start=datetime.min, end=datetime.max):
 #vykresleni usecek v obrazku
     for x in datehistogram:
         if (x >= mindate) and (x <= maxdate):
-            lx = (((x - mindate).total_seconds() / 3600) * width) / deltahours
+            lx1 = (((x - mindate).total_seconds() / 3600) * width) / deltahours
+            lx2 = ((((x + timedelta(hours=1)) - mindate).total_seconds() / 3600) * width) / deltahours -1
             ly = (datehistogram[x] * height) / maxcount
-            draw.line((lx, height, lx, height - ly), fill="black")
+            #draw.line((lx, height, lx, height - ly), fill="black")
+            draw.rectangle((lx1,height,lx2,height - ly),fill="blue",outline="black")
 
     return [img, mindate, maxdate, maxcount]
 
@@ -106,5 +93,4 @@ def make_nice_histogram_layout(imghistogramreturn, iteration):
 
 
 image = make_nice_histogram_layout(imghistogram(1000, 500), 200)
-# image.show()
-# image.save("histogram.jpg",format=None)
+image.show()
