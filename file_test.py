@@ -62,7 +62,7 @@ def imghistogram(width, height, start=datetime.min, end=datetime.max):
     for x in datehistogram:
         if (x >= mindate) and (x <= maxdate):
             lx1 = (((x - mindate).total_seconds() / 3600) * width) / deltahours
-            lx2 = ((((x + timedelta(hours=1)) - mindate).total_seconds() / 3600) * width) / deltahours
+            lx2 = ((((x + timedelta(hours=1)) - mindate).total_seconds() / 3600) * width) / deltahours -1
             ly = (datehistogram[x] * height) / maxcount
             #draw.line((lx, height, lx, height - ly), fill="black")
             draw.rectangle((lx1,height,lx2,height - ly),fill="blue",outline="black")
