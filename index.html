@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <meta charSet="utf-8" />
+        <!--<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport" /> -->
+       <!-- <meta content="ie=edge" httpEquiv="x-ua-compatible" /> -->
+        <title> Webová stránka pro semestrální práci z ITE </title>
+
+        <script src="./js/jquery.js" type="text/javascript"></script>
+        <script src="./js/functions.js" type="text/javascript"></script>
+
+        
+    </head>
+    
+    <body>
+        <div style="text-align: center">
+            <p id="casoveObdobi">
+                Zadejte časové období, v kterém chcete vyhledávat:<br />
+   
+                (YYYY-MM-DD HH:MM:SS) <br />
+
+                OD: <input id="datumOD" type="text" style="width:200px"><br />
+                DO: <input id="datumDO" type="text" style="width:200px">
+            </p>
+            <button id="searchByDate" onclick="search_by_date();">Vyhledat podle casoveho obdobi</button>
+            
+            <p id="text">
+                Zadejte hledaný text: <br />
+
+                TEXT: <input id="textInput" type="text" style="width:500px"><br />
+            </p>
+            
+            <button id="searchText" onclick="search_by_text()">Vyhledat zadaný text</button>
+            
+            <p id="textDOLE">
+
+                Seznam pro zadane obdobi
+
+            </p>
+
+
+            <ul id="mujUL">
+
+            </ul>
+
+            <button id="smaz">Skryt graf</button>
+
+            <br />
+                <img id="pict" alt="histogram" ><br><br>
+            <br />
+
+        </div>
+        
+    </body>
+</html>

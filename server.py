@@ -1,8 +1,17 @@
+
+import tornado.ioloop
+import tornado.web
+from os.path import dirname, join
+
+
+
 import json
 import zipfile
+import StringIO
 from datetime import datetime
 from datetime import timedelta
 from PIL import Image, ImageDraw, ImageFont
+
 
 #nacteni souboru
 soubor = zipfile.ZipFile('logs.dump.zip', 'r')
@@ -91,6 +100,51 @@ def make_nice_histogram_layout(imghistogramreturn, iteration):
     return img
 
 
-image = make_nice_histogram_layout(imghistogram(1000, 500), 200)
-#image.show()
-image.save("histogram.gif", format=None)
+
+print "najeto"
+
+
+
+class MainHandler(tornado.web.RequestHandler):
+
+    def get(self):
+        self.render("index.html")
+
+
+class SearchHandler(tornado.web.RequestHandler):
+    def post(self):
+        args = self.request.arguments
+        if args.has_key("od")and(args.has_key("do")) :
+            od = datetime.strptime(args["od"], '%Y-%m-%d %H:%M:%S,%f')
+            do = datetime.strptime(args["do"], '%Y-%m-%d %H:%M:%S,%f')
+
+
+class HistogramHandler(tornado.web.RequestHandler):
+    def get(self):
+        args = self.request.arguments
+        if args.has_key("od")and(args.has_key("do")) :
+
+            if args["od"][0]=="":
+                od = datetime.min
+            else:
+                od = datetime.strptime(args["od"][0], '%Y-%m-%d %H:%M:%S')
+
+            if args["do"][0]=="":
+                do = datetime.max
+            else:
+                do = datetime.strptime(args["do"][0], '%Y-%m-%d %H:%M:%S')
+            histogram = make_nice_histogram_layout(imghistogram(600,300,od,do),200)
+            output = StringIO.StringIO()
+            histogram.save(output,'PNG')
+            self.write(output.getvalue())
+
+
+if __name__ == "__main__":
+    app = tornado.web.Application([
+        (r"/", MainHandler),
+        (r"/js/(.*)", tornado.web.StaticFileHandler, {"path": join(dirname(__file__),"js")}),
+        (r"/search",SearchHandler),
+        (r"/histogram", HistogramHandler)
+    ])
+    app.listen(8885)
+    tornado.ioloop.IOLoop.current().start()
