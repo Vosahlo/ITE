@@ -4,11 +4,12 @@ from datetime import datetime
 from datetime import timedelta
 from PIL import Image, ImageDraw, ImageFont
 
-# nacteni souboru
+hourly1Daily2=2 #1 hourly 2 daily
+#nacteni souboru
 soubor = zipfile.ZipFile('logs.dump.zip', 'r')
 
 
-# class pro objekty do listu
+#class pro objekty do listu
 class LogFile:
     def __init__(self, name, date, method, message):
         self.name = name
@@ -16,10 +17,9 @@ class LogFile:
         self.method = method
         self.message = message
 
-
 loglist = []
 
-# pridani dat do seznamu
+#pridani dat do seznamu
 zipfilelist = soubor.namelist()
 for x in zipfilelist:
     myJson = json.loads(soubor.read(x))
@@ -30,13 +30,14 @@ for x in zipfilelist:
 
 del zipfilelist
 
-
 datehistogram = {}
-# spocitani jednotlivych datumu
+#spocitani jednotlivych datumu
 for x in loglist:
     datum = x.date
-    # zjednoduseni casu pro porovnani
-    datum = datum.replace(second=0, microsecond=0, minute=0, hour=0)
+    #zjednoduseni casu pro porovnani
+    datum = datum.replace(second=0, microsecond=0, minute=0)
+    if hourly1Daily2==2:
+        datum = datum.replace(second=0, microsecond=0, minute=0, hour=0)
     if datehistogram.has_key(datum):
         datehistogram[datum] += 1
     else:
@@ -55,23 +56,24 @@ def imghistogram(width, height, start=datetime.min, end=datetime.max):
             if (maxdate < x):
                 maxdate = x
 
-                # vytvoreni obrazku
+#vytvoreni obrazku
     img = Image.new('RGB', (width, height), "white")
     draw = ImageDraw.Draw(img)
     delta = maxdate - mindate
     deltahours = delta.total_seconds() / 3600
-    # vykresleni usecek v obrazku
+#vykresleni usecek v obrazku
     for x in datehistogram:
         if (x >= mindate) and (x <= maxdate):
             lx1 = (((x - mindate).total_seconds() / 3600) * width) / deltahours
-            lx2 = ((((x + timedelta(days=1)) - mindate).total_seconds() / 3600)* width) / deltahours - 2
+            lx2 = ((((x + timedelta(hours=1)) - mindate).total_seconds() / 3600) * width) / deltahours - hourly1Daily2
+            if hourly1Daily2 == 2:
+                lx2 = ((((x + timedelta(days=1)) - mindate).total_seconds() / 3600) * width) / deltahours - 2
             ly = (datehistogram[x] * height) / maxcount
-            draw.rectangle((lx1, height, lx2, height - ly), fill="blue", outline="black")
+            draw.rectangle((lx1,height,lx2,height - ly),fill="blue",outline="black")
 
     return [img, mindate, maxdate, maxcount]
 
-
-# ramecek obrazku s popisky
+#ramecek obrazku s popisky
 def make_nice_histogram_layout(imghistogramreturn, iteration):
     old_image = imghistogramreturn[0]
     min_date = imghistogramreturn[1]
@@ -93,7 +95,10 @@ def make_nice_histogram_layout(imghistogramreturn, iteration):
         carka += iteration
     return img
 
+step=200
+if hourly1Daily2==2:
+    step=1000
 
-image = make_nice_histogram_layout(imghistogram(1000, 500), 1000)
+image = make_nice_histogram_layout(imghistogram(1000, 500), step)
 #image.show()
-image.save("histogram.jpg", format=None)
+image.save("histogram.gif", format=None)
