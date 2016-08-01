@@ -4,18 +4,13 @@ from datetime import datetime
 from datetime import timedelta
 from PIL import Image, ImageDraw, ImageFont
 
-hourly1Daily2 = 1  # 1 hourly 2 daily
-
-
-# nacteni souboru
-
-
 
 # class pro objekty do listu
 class LogFile:
     def __init__(self, name, date, method, message):
         self.name = name
         self.date = date
+  #      self.datestring = datestring
         self.method = method
         self.message = message
 
@@ -33,9 +28,6 @@ def load_logs(filename):
     return loglist
 
 
-log_list = load_logs('logs.dump.zip')
-
-
 def select_by_date(loglist, start=datetime.min, end=datetime.max):
     new_log_list = []
     for x in loglist:
@@ -50,6 +42,21 @@ def select_by_text(log_list, pattern):
         if (x.message.find(pattern) > -1):
             new_log_list.append(x)
     return new_log_list
+
+
+def log_list_to_json(log_list):
+    json_output = "["
+    for x in log_list:
+        item = "{"\
+               "name : '" + x.name + "',"\
+               "date : '" + str(x.date) + "',"\
+               "method : '" + x.method + "',"\
+               "message : '" + x.message + "'}"
+        json_output = json_output + item + ","
+
+    json_output = json_output[:-1] + "]"
+
+    return json_output
 
 
 def get_histogram_hourly(log_list):
@@ -75,7 +82,12 @@ def get_histogram_daily(log_list):
             daily_histogram[datum] = 1
     return daily_histogram
 
-def imghistogram(width, height, loglist, hourly1_daily2 = 1):
+
+hourly = 1
+daily = 2
+
+
+def imghistogram(width, height, loglist, hourly1_daily2=1):
     maxcount = 0
     datehistogram = {}
     if hourly1_daily2 == 1:
@@ -92,7 +104,7 @@ def imghistogram(width, height, loglist, hourly1_daily2 = 1):
         if (maxdate < x):
             maxdate = x
 
-                # vytvoreni obrazku
+            # vytvoreni obrazku
     img = Image.new('RGB', (width, height), "white")
     draw = ImageDraw.Draw(img)
     delta = maxdate - mindate
@@ -124,6 +136,8 @@ def make_nice_histogram_layout(imghistogramreturn):
         iteration = 10
     elif max_count < 2000:
         iteration = 100
+    else:
+        iteration = 1000
 
     x_shift = 100
     corner = 25
@@ -140,10 +154,3 @@ def make_nice_histogram_layout(imghistogramreturn):
         draw.text((x_shift - draw.textsize(unicode(carka))[0], ly), unicode(carka), fill="orange")
         carka += iteration
     return img
-
-
-
-
-image = make_nice_histogram_layout(imghistogram(1000, 500,select_by_text(log_list,"index"),2))
-image.show()
-image.save("histogram.png", format=None)
