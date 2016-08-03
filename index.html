@@ -2,6 +2,7 @@
 <head>
     <meta charSet="utf-8"/>
     <title> Webová stránka pro semestrální práci z ITE </title>
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico'/>
 
     <script src="./js/jquery.js" type="text/javascript"></script>
     <script src="./js/functions.js" type="text/javascript"></script>
@@ -29,25 +30,17 @@
 
     <button id="searchText" onclick="search_by_text();">Vyhledat zadaný text</button>
 
-    <p id="textDOLE">
-
-        Seznam pro zadane obdobi
-
-    </p>
-
-
-    <ul id="mujUL">
-
-    </ul>
-
+    <div id="resultCountDiv"></div>
     Zobrazovat histogram po
     <input id="radioDaily" type="radio" name="dailyhourly" value="daily" checked="true"> dnech
     <input id="radioHourly" type="radio" name="dailyhourly" value="hourly"> hodinách
-
-
     <br/>
     <img id="hist" alt="histogram"><br><br>
     <br/>
+    <div id="resultPagerDiv"></div>
+    <div id="resultTableDiv"></div>
+
+
 
 </div>
 

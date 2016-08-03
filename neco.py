@@ -44,14 +44,23 @@ def select_by_text(log_list, pattern):
     return new_log_list
 
 
+def select_by_range(log_list, start, end):
+    new_log_list = []
+    if (len(log_list)<end):
+        end = len(log_list) - 1
+    for x in range(start,end) :
+        new_log_list.append(log_list[x])
+    return new_log_list
+
+
 def log_list_to_json(log_list):
     json_output = "["
     for x in log_list:
         item = "{"\
-               "name : '" + x.name + "',"\
-               "date : '" + str(x.date) + "',"\
-               "method : '" + x.method + "',"\
-               "message : '" + x.message + "'}"
+               "\"name\" : \"" + x.name + "\","\
+               "\"date\" : \"" + str(x.date) + "\","\
+               "\"method\" : \"" + x.method + "\","\
+               "\"message\" : \"" + x.message + "\"}"
         json_output = json_output + item + ","
 
     json_output = json_output[:-1] + "]"
@@ -154,3 +163,4 @@ def make_nice_histogram_layout(imghistogramreturn):
         draw.text((x_shift - draw.textsize(unicode(carka))[0], ly), unicode(carka), fill="orange")
         carka += iteration
     return img
+
