@@ -1,13 +1,8 @@
-import tornado.ioloop
 import tornado.web
 from os.path import dirname, join
-
-import json
-import zipfile
 import StringIO
 from datetime import datetime
-from datetime import timedelta
-from PIL import Image, ImageDraw, ImageFont
+
 import neco
 
 # nacteni souboru
