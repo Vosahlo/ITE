@@ -39,6 +39,9 @@ function search_ajax(ajax_url) {
             $("#resultCountDiv").html(s);
             if (result_count>0) {
                 show_page(0);
+            } else {
+                $("#resultTableDiv").html("");
+                $("#resultPagerDiv").html("");
             }
         }
     });

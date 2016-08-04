@@ -21,6 +21,7 @@ PAGE_STEP = 100
 print "Json loaded..."
 
 
+# Handlery
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("index.html")
@@ -30,6 +31,7 @@ class SearchHandler(tornado.web.RequestHandler):
     def get(self):
         args = self.request.arguments
         selected_log_list = []
+        # vyhledani podle datumu
         if args.has_key("od") and (args.has_key("do")):
             if args["od"][0] == "":
                 start = datetime.min
@@ -40,7 +42,8 @@ class SearchHandler(tornado.web.RequestHandler):
                 end = datetime.max
             else:
                 end = datetime.strptime(args["do"][0], date_format)
-            selected_log_list = neco.select_by_date(log_list,start,end)
+            selected_log_list = neco.select_by_date(log_list, start, end)
+        # vyhledani podle textu
         if args.has_key("pattern"):
             pattern = args["pattern"][0]
             selected_log_list = neco.select_by_text(log_list, pattern)
@@ -50,19 +53,18 @@ class SearchHandler(tornado.web.RequestHandler):
         self.write(str(len(selected_log_list)))
 
 
-
-
 class ShowHandler(tornado.web.RequestHandler):
     def get(self):
         args = self.request.arguments
         offset = 0
-        if args.has_key("offset") :
+        if args.has_key("offset"):
             offset = int(args["offset"][0])
 
         json_result = neco.log_list_to_json(neco.select_by_range(last_search, offset, offset + PAGE_STEP))
         self.write(json_result)
 
 
+# handler pro histogram
 class HistogramHandler(tornado.web.RequestHandler):
     def get(self):
         args = self.request.arguments
@@ -86,6 +88,7 @@ class HistogramHandler(tornado.web.RequestHandler):
                 neco.imghistogram(600, 300, neco.select_by_date(log_list, start, end), hourly_daily))
         if args.has_key("pattern"):
             pattern = args["pattern"][0]
+            #vytvoreni obrazku
             histogram = neco.make_nice_histogram_layout(
                 neco.imghistogram(600, 300, neco.select_by_text(log_list, pattern), hourly_daily))
         output = StringIO.StringIO()

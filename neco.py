@@ -14,7 +14,7 @@ class LogFile:
         self.method = method
         self.message = message
 
-
+#nacteni logu pri spusteni serveru
 def load_logs(filename):
     loaded_file = zipfile.ZipFile(filename, 'r')
     zipfilelist = loaded_file.namelist()
@@ -27,7 +27,7 @@ def load_logs(filename):
         loglist.append(LogFile(x, datum, method, message))
     return loglist
 
-
+#vybrani logu podle zadaneho datumu
 def select_by_date(loglist, start=datetime.min, end=datetime.max):
     new_log_list = []
     for x in loglist:
@@ -35,7 +35,7 @@ def select_by_date(loglist, start=datetime.min, end=datetime.max):
             new_log_list.append(x)
     return new_log_list
 
-
+#vybrani logu podle zadaneho textu
 def select_by_text(log_list, pattern):
     new_log_list = []
     for x in log_list:
@@ -43,7 +43,7 @@ def select_by_text(log_list, pattern):
             new_log_list.append(x)
     return new_log_list
 
-
+#vybrani urciteho poctu logu
 def select_by_range(log_list, start, end):
     new_log_list = []
     if (len(log_list)<end):
@@ -52,7 +52,7 @@ def select_by_range(log_list, start, end):
         new_log_list.append(log_list[x])
     return new_log_list
 
-
+#vytvoreni mensiho jsonu pro vypsani logu na strance
 def log_list_to_json(log_list):
     json_output = "["
     for x in log_list:
@@ -67,7 +67,7 @@ def log_list_to_json(log_list):
 
     return json_output
 
-
+#uprava datumu pro vykresleni po hodinach
 def get_histogram_hourly(log_list):
     hourly_histogram = {}
     for x in log_list:
@@ -79,7 +79,7 @@ def get_histogram_hourly(log_list):
             hourly_histogram[datum] = 1
     return hourly_histogram
 
-
+#uprava datumu pro vykresleni po dnech
 def get_histogram_daily(log_list):
     daily_histogram = {}
     for x in log_list:
@@ -91,13 +91,14 @@ def get_histogram_daily(log_list):
             daily_histogram[datum] = 1
     return daily_histogram
 
-
+#hodnoty pouzite pro vykresleni grafu
 hourly = 1
 daily = 2
 
-
+#vytvoreni obrazku
 def imghistogram(width, height, loglist, hourly1_daily2=1):
     maxcount = 0
+
     datehistogram = {}
     if hourly1_daily2 == 1:
         datehistogram = get_histogram_hourly(loglist)
@@ -112,8 +113,6 @@ def imghistogram(width, height, loglist, hourly1_daily2=1):
             mindate = x
         if (maxdate < x):
             maxdate = x
-
-            # vytvoreni obrazku
     img = Image.new('RGB', (width, height), "white")
     draw = ImageDraw.Draw(img)
     delta = maxdate - mindate
@@ -137,7 +136,9 @@ def make_nice_histogram_layout(imghistogramreturn):
     min_date = imghistogramreturn[1]
     max_date = imghistogramreturn[2]
     max_count = imghistogramreturn[3]
-
+    if max_count == 0:
+        max_count = 1
+    # popis y-osy v grafu
     iteration = 0
     if max_count < 20:
         iteration = 1
