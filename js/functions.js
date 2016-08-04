@@ -30,6 +30,7 @@ function search_by_text() {
 
 }
 
+// zpracovani vysledku a zavolani funkce zobrazujici vypis logu
 function search_ajax(ajax_url) {
     $.ajax({
         url:ajax_url,
@@ -46,7 +47,7 @@ function search_ajax(ajax_url) {
         }
     });
 }
-
+// zobrazeni vypisu logu
 function show_page(page_index) {
     ajax_url = "./show?offset="+page_index*PAGE_STEP;
     $.ajax({
@@ -69,7 +70,7 @@ function show_page(page_index) {
         }
     });
 }
-
+// odkazy na strankovani logu
 function create_page_links(page_index) {
     if (result_count<PAGE_STEP) {
         $("#resultPagerDiv").html("");

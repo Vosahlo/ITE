@@ -83,7 +83,7 @@ class HistogramHandler(tornado.web.RequestHandler):
                 neco.imghistogram(600, 300, neco.select_by_date(log_list, start, end), hourly_daily))
         if args.has_key("pattern"):
             pattern = args["pattern"][0]
-            #vytvoreni obrazku
+            # vytvoreni obrazku
             histogram = neco.make_nice_histogram_layout(
                 neco.imghistogram(600, 300, neco.select_by_text(log_list, pattern), hourly_daily))
         output = StringIO.StringIO()
