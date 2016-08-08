@@ -117,6 +117,9 @@ def imghistogram(width, height, loglist, hourly1_daily2=1):
     draw = ImageDraw.Draw(img)
     delta = maxdate - mindate
     deltahours = delta.total_seconds() / 3600
+    if deltahours==0: #hotfix
+        deltahours=1
+
     # vykresleni usecek v obrazku
     for x in datehistogram:
         if (x >= mindate) and (x <= maxdate):

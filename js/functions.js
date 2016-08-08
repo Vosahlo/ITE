@@ -84,14 +84,8 @@ function create_page_links(page_index) {
             output = output + item + " ";
         }
         $("#resultPagerDiv").html(output);
-
     }
-
-
 }
-
-
-
 
 
 function get_hourly_daily() {
