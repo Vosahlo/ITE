@@ -3,13 +3,13 @@ from os.path import dirname, join
 import StringIO
 from datetime import datetime
 
-import neco
+import neco_jinyho
 
 # nacteni souboru
 
 date_format = '%Y-%m-%d %H:%M:%S'
 filename = 'logs.dump.zip'
-log_list = neco.load_logs(filename)
+log_list = neco_jinyho.load_logs(filename)
 last_search = []
 PAGE_STEP = 100
 
@@ -37,11 +37,11 @@ class SearchHandler(tornado.web.RequestHandler):
                 end = datetime.max
             else:
                 end = datetime.strptime(args["do"][0], date_format)
-            selected_log_list = neco.select_by_date(log_list, start, end)
+            selected_log_list = neco_jinyho.select_by_date(log_list, start, end)
         # vyhledani podle textu
         if args.has_key("pattern"):
             pattern = args["pattern"][0]
-            selected_log_list = neco.select_by_text(log_list, pattern)
+            selected_log_list = neco_jinyho.select_by_text(log_list, pattern)
 
         global last_search
         last_search = selected_log_list
@@ -55,7 +55,7 @@ class ShowHandler(tornado.web.RequestHandler):
         if args.has_key("offset"):
             offset = int(args["offset"][0])
 
-        json_result = neco.log_list_to_json(neco.select_by_range(last_search, offset, offset + PAGE_STEP))
+        json_result = neco_jinyho.log_list_to_json(neco_jinyho.select_by_range(last_search, offset, offset + PAGE_STEP))
         self.write(json_result)
 
 
@@ -64,7 +64,7 @@ class HistogramHandler(tornado.web.RequestHandler):
     def get(self):
         args = self.request.arguments
         histogram = None
-        hourly_daily = neco.daily
+        hourly_daily = neco_jinyho.daily
         if args.has_key("hd"):
             hourly_daily = int(args["hd"][0])
 
@@ -79,13 +79,13 @@ class HistogramHandler(tornado.web.RequestHandler):
                 end = datetime.max
             else:
                 end = datetime.strptime(args["do"][0], date_format)
-            histogram = neco.make_nice_histogram_layout(
-                neco.imghistogram(800, 400, neco.select_by_date(log_list, start, end), hourly_daily))
+            histogram = neco_jinyho.make_nice_histogram_layout(
+                neco_jinyho.imghistogram(800, 400, neco_jinyho.select_by_date(log_list, start, end), hourly_daily))
         if args.has_key("pattern"):
             pattern = args["pattern"][0]
             # vytvoreni obrazku
-            histogram = neco.make_nice_histogram_layout(
-                neco.imghistogram(800, 400, neco.select_by_text(log_list, pattern), hourly_daily))
+            histogram = neco_jinyho.make_nice_histogram_layout(
+                neco_jinyho.imghistogram(800, 400, neco_jinyho.select_by_text(log_list, pattern), hourly_daily))
         output = StringIO.StringIO()
         histogram.save(output, 'PNG')
         self.write(output.getvalue())

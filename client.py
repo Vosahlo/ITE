@@ -2,14 +2,12 @@ from __future__ import print_function
 import requests
 from PIL import Image
 import StringIO
-import neco
+import json
 
 
 # TODO
 
 def main():
-    od = "2015-01-11 10:10:31"
-    do = "2016-01-11 10:10:31"
     args={}
     while (len(args)==0):
         call = raw_input("Prejete hledat podle casoveho obdobi/retezce?: o/r ")
@@ -37,18 +35,47 @@ def main():
         image.save("histogram.png", "PNG")
         print("histogram ulozen do histogram.png")
         image.show()
-    except requests.ConnectionError as error:
+    except requests.ConnectionError :
         print("Histogram error!")
     search_count = 0
     try:
         search_count = int(requests.get(searchUrl, args).content)
         print("hledani vraci "+str(search_count)+" vysledku")
-    except requests.ConnectionError as error:
+    except requests.ConnectionError :
         print("Search error!")
 
     if search_count>0 :
         if search_count<=100 :
+            try:
+                response = requests.get(showUrl, {}).content
+                print_json(response)
+            except requests.ConnectionError:
+                print("Show error!")
+        else:
+            while (1):
+                offset = raw_input("Vypis 100 prvku, od kolika zacit (0-"+str(search_count-100)+") k=konec ?: ")
+                if (offset=="k"):
+                    return
+                offset = int(offset)
+                try:
+                    response = requests.get(showUrl, {"offset":offset}).content
+                    print_json(response)
+                except requests.ConnectionError :
+                    print("Show error!")
+
+
+
+
             # TOOOOOOOOOODOOOOOOOOOOOOOOO
+
+def print_json(json_data):
+    log_list = json.loads(json_data)
+    for x in log_list:
+        print ("name "+x[u'name']+" | metoda: " + x[u'method']+" | datum: " + x[u'date'])
+        print (x[u'message'])
+        print ()
+
+
 
 while (1):
     main()
