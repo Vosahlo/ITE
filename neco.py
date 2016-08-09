@@ -10,11 +10,12 @@ class LogFile:
     def __init__(self, name, date, method, message):
         self.name = name
         self.date = date
-  #      self.datestring = datestring
+        #      self.datestring = datestring
         self.method = method
         self.message = message
 
-#nacteni logu pri spusteni serveru
+
+# nacteni logu pri spusteni serveru
 def load_logs(filename):
     loaded_file = zipfile.ZipFile(filename, 'r')
     zipfilelist = loaded_file.namelist()
@@ -27,7 +28,8 @@ def load_logs(filename):
         loglist.append(LogFile(x, datum, method, message))
     return loglist
 
-#vybrani logu podle zadaneho datumu
+
+# vybrani logu podle zadaneho datumu
 def select_by_date(loglist, start=datetime.min, end=datetime.max):
     new_log_list = []
     for x in loglist:
@@ -35,7 +37,8 @@ def select_by_date(loglist, start=datetime.min, end=datetime.max):
             new_log_list.append(x)
     return new_log_list
 
-#vybrani logu podle zadaneho textu
+
+# vybrani logu podle zadaneho textu
 def select_by_text(log_list, pattern):
     new_log_list = []
     for x in log_list:
@@ -43,23 +46,25 @@ def select_by_text(log_list, pattern):
             new_log_list.append(x)
     return new_log_list
 
-#vybrani urciteho poctu logu
+
+# vybrani urciteho poctu logu
 def select_by_range(log_list, start, end):
     new_log_list = []
-    if (len(log_list)<end):
+    if (len(log_list) < end):
         end = len(log_list) - 1
-    for x in range(start,end) :
+    for x in range(start, end + 1):
         new_log_list.append(log_list[x])
     return new_log_list
 
-#vytvoreni mensiho jsonu pro vypsani logu na strance
+
+# vytvoreni mensiho jsonu pro vypsani logu na strance
 def log_list_to_json(log_list):
     json_output = "["
     for x in log_list:
-        item = "{"\
-               "\"name\" : \"" + x.name + "\","\
-               "\"date\" : \"" + str(x.date) + "\","\
-               "\"method\" : \"" + x.method + "\","\
+        item = "{" \
+               "\"name\" : \"" + x.name + "\"," \
+               "\"date\" : \"" + str(x.date) + "\"," \
+               "\"method\" : \"" + x.method + "\"," \
                "\"message\" : \"" + x.message + "\"}"
         json_output = json_output + item + ","
 
@@ -67,7 +72,8 @@ def log_list_to_json(log_list):
 
     return json_output
 
-#uprava datumu pro vykresleni po hodinach
+
+# uprava datumu pro vykresleni po hodinach
 def get_histogram_hourly(log_list):
     hourly_histogram = {}
     for x in log_list:
@@ -79,7 +85,8 @@ def get_histogram_hourly(log_list):
             hourly_histogram[datum] = 1
     return hourly_histogram
 
-#uprava datumu pro vykresleni po dnech
+
+# uprava datumu pro vykresleni po dnech
 def get_histogram_daily(log_list):
     daily_histogram = {}
     for x in log_list:
@@ -91,11 +98,13 @@ def get_histogram_daily(log_list):
             daily_histogram[datum] = 1
     return daily_histogram
 
-#hodnoty pouzite pro vykresleni grafu
+
+# hodnoty pouzite pro vykresleni grafu
 hourly = 1
 daily = 2
 
-#vytvoreni obrazku
+
+# vytvoreni obrazku
 def imghistogram(width, height, loglist, hourly1_daily2=1):
     maxcount = 0
 
@@ -117,8 +126,8 @@ def imghistogram(width, height, loglist, hourly1_daily2=1):
     draw = ImageDraw.Draw(img)
     delta = maxdate - mindate
     deltahours = delta.total_seconds() / 3600
-    if deltahours==0: #hotfix
-        deltahours=1
+    if deltahours == 0:  # hotfix
+        deltahours = 1
 
     # vykresleni usecek v obrazku
     for x in datehistogram:
@@ -167,4 +176,3 @@ def make_nice_histogram_layout(imghistogramreturn):
         draw.text((x_shift - draw.textsize(unicode(carka))[0], ly), unicode(carka), fill="orange")
         carka += iteration
     return img
-
