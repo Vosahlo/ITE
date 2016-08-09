@@ -10,7 +10,7 @@ class LogFile:
     def __init__(self, name, date, method, message):
         self.name = name
         self.date = date
-        #      self.datestring = datestring
+        #      self.dateString = dateString
         self.method = method
         self.message = message
 
