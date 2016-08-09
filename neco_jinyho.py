@@ -94,14 +94,14 @@ hourly = 1
 daily = 2
 
 # vytvoreni obrazku
-def imgHistogram(width, height, loglist, hourly1_daily2=1):
+def imgHistogram(width, height, logList, hourly1_daily2=1):
     maxCount = 0
 
     dateHistogram = {}
     if hourly1_daily2 == 1:
-        dateHistogram = get_histogram_hourly(loglist)
+        dateHistogram = get_histogram_hourly(logList)
     else:
-        dateHistogram = get_histogram_daily(loglist)
+        dateHistogram = get_histogram_daily(logList)
 
     minDate = datetime.max
     maxDate = datetime.min

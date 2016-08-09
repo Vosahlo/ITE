@@ -80,12 +80,12 @@ class HistogramHandler(tornado.web.RequestHandler):
             else:
                 end = datetime.strptime(args["do"][0], date_format)
             histogram = neco_jinyho.make_nice_histogram_layout(
-                neco_jinyho.imghistogram(800, 400, neco_jinyho.select_by_date(log_list, start, end), hourly_daily))
+                neco_jinyho.imgHistogram(800, 400, neco_jinyho.select_by_date(log_list, start, end), hourly_daily))
         if args.has_key("pattern"):
             pattern = args["pattern"][0]
             # vytvoreni obrazku
             histogram = neco_jinyho.make_nice_histogram_layout(
-                neco_jinyho.imghistogram(800, 400, neco_jinyho.select_by_text(log_list, pattern), hourly_daily))
+                neco_jinyho.imgHistogram(800, 400, neco_jinyho.select_by_text(log_list, pattern), hourly_daily))
         output = StringIO.StringIO()
         histogram.save(output, 'PNG')
         self.write(output.getvalue())
