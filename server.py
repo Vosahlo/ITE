@@ -16,7 +16,7 @@ PAGE_STEP = 100
 print "Json loaded..."
 
 
-# Handlery
+# Handlers
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("index.html")
