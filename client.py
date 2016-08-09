@@ -4,9 +4,6 @@ from PIL import Image
 import StringIO
 import json
 
-
-# TODO
-
 def main():
     args={}
     while (len(args)==0):
@@ -63,19 +60,12 @@ def main():
                 except requests.ConnectionError :
                     print("Show error!")
 
-
-
-
-            # TOOOOOOOOOODOOOOOOOOOOOOOOO
-
 def print_json(json_data):
     log_list = json.loads(json_data)
     for x in log_list:
         print ("name "+x[u'name']+" | metoda: " + x[u'method']+" | datum: " + x[u'date'])
         print (x[u'message'])
         print ()
-
-
 
 while (1):
     main()
