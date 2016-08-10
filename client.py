@@ -1,4 +1,6 @@
 from __future__ import print_function
+
+import urllib
 import requests
 from PIL import Image
 import StringIO
@@ -29,8 +31,9 @@ def main():
     try:
         response = requests.get(histogramUrl, args)  # Prvdepodobne spatna URI, ale neumim s nima moc dobre pracovat.
         image = Image.open(StringIO.StringIO(response.content))
-        image.save("histogram.png", "PNG")
-        print("histogram ulozen do histogram.png")
+        filename = "histogram_"+urllib.urlencode(args)+".png"
+        image.save(filename, "PNG")
+        print("histogram ulozen do "+filename)
         image.show()
     except requests.ConnectionError :
         print("Histogram error!")
